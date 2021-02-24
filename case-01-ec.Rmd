@@ -21,8 +21,8 @@ dig <- read_csv("dig.csv")
 Any discrepancy in replication results are noted. 
 
 # Table 1
-***
-### Count by treatment
+
+## Count by treatment
 ```{r}
 # mutate name of treatment
 dig <- dig %>% 
@@ -37,7 +37,7 @@ dig %>%
   kable()
 ```
 
-### Age
+## Age
 ```{r}
 dig %>% 
   group_by(treatment) %>% 
@@ -46,7 +46,7 @@ dig %>%
   kable()
 ```
 
-### Ejection fraction
+## Ejection fraction
 ```{r}
 dig %>% 
   group_by(treatment) %>% 
@@ -57,7 +57,7 @@ dig %>%
 
 The standard deviation value for the digoxin group is 8.8 instead of 8.9.
 
-### Median duration of CHF
+## Median duration of CHF
 ```{r}
 dig %>% 
   group_by(treatment) %>% 
@@ -65,8 +65,7 @@ dig %>%
   kable()
 ```
 
-
-### Female Sex
+## Female Sex
 ```{r}
 dig %>% 
   group_by(treatment, SEX) %>% 
@@ -77,7 +76,7 @@ dig %>%
   kable()
 ```
 
-### Nonwhite race
+## Nonwhite race
 ```{r}
 dig %>% 
   group_by(treatment, RACE) %>% 
@@ -90,7 +89,7 @@ dig %>%
 
 The value for digoxin group is 14.3% instead of 14.4%.
 
-### Age >70 yr
+## Age >70 yr
 ```{r}
 dig %>% 
   mutate(age_over_70 = case_when(AGE > 70 ~ "yes",
@@ -103,7 +102,7 @@ dig %>%
   kable()
 ```
 
-### Method of assessing ejection fraction
+## Method of assessing ejection fraction
 ```{r}
 dig %>% 
   mutate(method = case_when(EJFMETH == 1 ~ "Radionuclide ventriculography",
@@ -116,7 +115,7 @@ dig %>%
   kable()
 ```
 
-### Cardiothoracic ratio >0.55
+## Cardiothoracic ratio >0.55
 ```{r}
 dig %>% 
   mutate(ratio_over_0.55 = case_when(CHESTX > 0.55 ~ "yes",
@@ -129,7 +128,7 @@ dig %>%
   kable()
 ```
 
-### NYHA class
+## NYHA class
 ```{r}
 dig %>% 
   mutate(class = case_when(FUNCTCLS == 1 ~ "I",
@@ -144,7 +143,7 @@ dig %>%
   kable()
 ```
 
-### No. of signs or symptoms of CHF
+## No. of signs or symptoms of CHF
 ```{r}
 dig %>% 
   mutate(number = case_when(NSYM == 0 ~ "0",
@@ -160,8 +159,8 @@ dig %>%
 ```
 The value for the digoxin group over 4 events is 80.2 instead of 80.1.
 
-### Medical history
-Previous myocardial infarction:
+## Medical history
+### Previous myocardial infarction:
 ```{r}
 dig %>% 
   group_by(treatment, PREVMI) %>% 
@@ -172,7 +171,7 @@ dig %>%
   kable()
 ```
 
-Current angina:
+### Current angina:
 ```{r}
 dig %>% 
   group_by(treatment, ANGINA) %>% 
@@ -183,7 +182,7 @@ dig %>%
   kable()
 ```
 
-Diabetes:
+### Diabetes:
 ```{r}
 dig %>% 
   group_by(treatment, DIABETES) %>% 
@@ -194,7 +193,7 @@ dig %>%
   kable()
 ```
 
-Hypertension:
+### Hypertension:
 ```{r}
 dig %>% 
   group_by(treatment, HYPERTEN) %>% 
@@ -205,7 +204,7 @@ dig %>%
   kable()
 ```
 
-### Previous digoxin use
+## Previous digoxin use
 ```{r}
 dig %>% 
   group_by(treatment, DIGUSE) %>% 
@@ -217,8 +216,8 @@ dig %>%
 ```
 
 
-### Primary cause of CHF
-Ischemic:
+## Primary cause of CHF
+### Ischemic:
 ```{r}
 dig %>% 
   mutate(ischemic = case_when(CHFETIOL == 1 ~ "yes",
@@ -232,7 +231,7 @@ dig %>%
 ```
 The placebo value is 70.5 instead of 70.4.
 
-Nonischemic:
+### Nonischemic:
 ```{r}
 dig %>% 
   filter(!is.na(CHFETIOL)) %>% 
@@ -246,7 +245,7 @@ dig %>%
   kable()
 ```
 
-Nonischemic - Idiopathic:
+#### Nonischemic - Idiopathic:
 ```{r}
 dig %>% 
   filter(!is.na(CHFETIOL)) %>% 
@@ -262,7 +261,7 @@ dig %>%
 
 The placebo group value is 14.2 instead of 14.1.
 
-Nonischemic - Hypertensive:
+#### Nonischemic - Hypertensive:
 ```{r}
 dig %>% 
   filter(!is.na(CHFETIOL)) %>% 
@@ -276,7 +275,7 @@ dig %>%
   kable()
 ```
 
-Nonischemic - Other:
+#### Nonischemic - Other:
 ```{r}
 dig %>% 
   filter(!is.na(CHFETIOL)) %>% 
@@ -291,8 +290,8 @@ dig %>%
 ```
 The digoxin group value is 5.5 instead of 5.4.
 
-### Concomitant medications
-Diuretics:
+## Concomitant medications
+### Diuretics:
 ```{r}
 dig %>% 
   mutate(diuretics = case_when(DIURETK == 1 | DIURET == 1 ~ "yes",
@@ -305,7 +304,7 @@ dig %>%
   kable()
 ```
 
-ACE inhibitors:
+### ACE inhibitors:
 ```{r}
 dig %>% 
   group_by(treatment, ACEINHIB) %>% 
@@ -316,7 +315,7 @@ dig %>%
   kable()
 ```
 
-Nitrates:
+### Nitrates:
 ```{r}
 dig %>% 
   group_by(treatment, NITRATES) %>% 
@@ -329,7 +328,7 @@ dig %>%
 
 The value for digoxin group is 42.2 instead of 42.1.
 
-Other vasodilators:
+### Other vasodilators:
 ```{r}
 dig %>% 
   group_by(treatment, VASOD) %>% 
@@ -340,7 +339,7 @@ dig %>%
   kable()
 ```
 
-### Daily dose of study medication prescribed 
+## Daily dose of study medication prescribed 
 ```{r}
 dig %>% 
   mutate(dose = DIGDOSE) %>% 
@@ -355,8 +354,8 @@ dig %>%
 The placebo 0.250mg value is 70.1 instead of 70.0.
 
 # Table 4
-***
-### Ejection fraction
+
+## Ejection fraction
 ```{r}
 ef <- dig %>% 
   mutate(ejection_fraction = case_when(EJF_PER < 25 ~ "<0.25",
@@ -373,10 +372,57 @@ dig %>%
   left_join(ef) %>% 
   summarise(treatment, ejection_fraction, event_cnt, total_cnt, percent = round(event_cnt/total_cnt*100, 1)) %>% 
   kable()
-  
 ```
 
-### Previous use of digoxin
+### Ejection fraction 0.25-0.45
+Absolute difference: $32.3-27.0=-5.3$
+
+95% CI:$(-8.0, -2.7)$
+```{r}
+prop.test(x = c(613,735), n = c(2270, 2273), p = NULL,
+          alternative = "two.sided",
+          conf.level = 0.95, correct = FALSE)
+```
+
+Risk ratio: $0.80$
+
+95% CI: $(0.72, 0.89)$
+
+```{r}
+efbt <- dig %>%   
+  mutate(ejection_fraction = case_when(EJF_PER < 25 ~ "<0.25",
+                                       TRUE ~ "0.25-0.45")) %>% 
+  filter(ejection_fraction == "0.25-0.45")
+
+mod <- coxph(Surv(DWHFDAYS, DWHF) ~ treatment, data = efbt)
+summary(mod)
+```
+
+### Ejection fraction <0.25
+Absolute difference: $49.2-38.0=-11.2$
+
+95% CI:$(-15.3, -7.2)$
+```{r}
+prop.test(x = c(428,556), n = c(1127, 1130), p = NULL,
+          alternative = "two.sided",
+          conf.level = 0.95, correct = FALSE)
+```
+
+Risk ratio: $0.68$
+
+95% CI: $(0.60, 0.77)$
+
+```{r}
+efless <- dig %>%   
+  mutate(ejection_fraction = case_when(EJF_PER < 25 ~ "<0.25",
+                                       TRUE ~ "0.25-0.45")) %>% 
+  filter(ejection_fraction != "0.25-0.45")
+
+mod <- coxph(Surv(DWHFDAYS, DWHF) ~ treatment, data = efless)
+summary(mod)
+```
+
+## Previous use of digoxin
 
 ```{r}
 pdu <- dig %>% 
@@ -397,8 +443,55 @@ dig %>%
 
 ```
 
+### Existing previous use of digoxin
+Absolute difference: $45.3-36.7=-8.6$
 
-### Cause of heart failure
+95% CI:$(-12.1, -5.1)$
+```{r}
+prop.test(x = c(550,688), n = c(1498, 1519), p = NULL,
+          alternative = "two.sided",
+          conf.level = 0.95, correct = FALSE)
+```
+
+Risk ratio: $0.74$
+
+95% CI: $(0.66, 0.83)$
+
+```{r}
+yesuse <- dig %>%   
+  mutate(previous_digoxin_use = case_when(DIGUSE == 0 ~ "No",
+                                       TRUE ~ "Yes")) %>% 
+  filter(previous_digoxin_use == "Yes")
+
+mod <- coxph(Surv(DWHFDAYS, DWHF) ~ treatment, data = yesuse)
+summary(mod)
+```
+
+### No previous use of digoxin
+Absolute difference: $32.0-25.9=-6.2$
+
+95% CI:$(-9.0, -3.3)$
+```{r}
+prop.test(x = c(491,603), n = c(1899, 1884), p = NULL,
+          alternative = "two.sided",
+          conf.level = 0.95, correct = FALSE)
+```
+
+Risk ratio: $0.77$
+
+95% CI: $(0.68, 0.86)$
+
+```{r}
+nouse <- dig %>%   
+  mutate(previous_digoxin_use = case_when(DIGUSE == 0 ~ "No",
+                                       TRUE ~ "Yes")) %>% 
+  filter(previous_digoxin_use == "No")
+
+mod <- coxph(Surv(DWHFDAYS, DWHF) ~ treatment, data = nouse)
+summary(mod)
+```
+
+## Cause of heart failure
 ```{r}
 chf <- dig %>% 
   filter(!is.na(CHFETIOL)) %>% 
@@ -419,8 +512,58 @@ dig %>%
   kable()
 ```
 
+### Ischemic cause of heart failure
+Absolute difference: $36.4-30.4=-6.0$
 
-### Cardiothoracic ratio
+95% CI:$(-8.7, -3.3)$
+```{r}
+prop.test(x = c(731, 873), n = c(2405, 2398), p = NULL,
+          alternative = "two.sided",
+          conf.level = 0.95, correct = FALSE)
+```
+
+Risk ratio: $0.79$
+
+95% CI: $(0.72, 0.88)$
+
+```{r}
+ischemic <- dig %>%   
+  filter(!is.na(CHFETIOL)) %>% 
+  mutate(ischemic = case_when(CHFETIOL == 1 ~ "Yes",
+                              TRUE ~ "No")) %>% 
+  filter(ischemic == "Yes")
+
+mod <- coxph(Surv(DWHFDAYS, DWHF) ~ treatment, data = ischemic)
+summary(mod)
+```
+
+### Nonischemic cause of heart failure
+Absolute difference: $41.5-31.1=-10.3$
+
+95% CI:$(-14.5, -6.1)$
+```{r}
+prop.test(x = c(306, 413), n = c(983, 996), p = NULL,
+          alternative = "two.sided",
+          conf.level = 0.95, correct = FALSE)
+```
+
+Risk ratio: $0.67$
+
+95% CI: $(0.58, 0.77)$
+
+```{r}
+nonischemic <- dig %>%   
+  filter(!is.na(CHFETIOL)) %>% 
+  mutate(ischemic = case_when(CHFETIOL == 1 ~ "Yes",
+                              TRUE ~ "No")) %>% 
+  filter(ischemic == "No")
+
+mod <- coxph(Surv(DWHFDAYS, DWHF) ~ treatment, data = nonischemic)
+summary(mod)
+```
+
+
+## Cardiothoracic ratio
 ```{r}
 cr <- dig %>% 
   mutate(cardiothoracic_ratio = case_when(CHESTX > 0.55 ~ "Yes",
@@ -441,15 +584,57 @@ dig %>%
 
 The count for cardiothoracic ratio <=0.55 in the digoxin group is 2221 instead of 2220, though the proportions are not different from the paper after rounding.
 
+### Cardiothoracic ratio <= 0.55
+Absolute difference: $32.4-27.0=-5.4$
 
-### NYHA class
+95% CI:$(-8.1, -2.7)$
 ```{r}
-dig %>% 
-  filter(!is.na(FUNCTCLS)) %>% 
-  mutate(class = case_when(FUNCTCLS %in% c(1, 2) ~ "I or II",
-                           FUNCTCLS %in% c(3, 4) ~ "III or IV")) %>% 
-  count(treatment, class) 
+prop.test(x = c(600, 724), n = c(2221, 2233), p = NULL,
+          alternative = "two.sided",
+          conf.level = 0.95, correct = FALSE)
+```
 
+Risk ratio: $0.79$
+
+95% CI: $(0.71, 0.88)$
+
+```{r}
+cr_less <- dig %>%   
+  mutate(cardiothoracic_ratio = case_when(CHESTX > 0.55 ~ "Yes",
+                                 TRUE ~ "No")) %>% 
+  filter(cardiothoracic_ratio == "No")
+
+mod <- coxph(Surv(DWHFDAYS, DWHF) ~ treatment, data = cr_less)
+summary(mod)
+```
+
+### Cardiothoracic ratio > 0.55
+Absolute difference: $48.5-37.5=-11$
+
+95% CI:$(-14.9, -7.0)$
+```{r}
+prop.test(x = c(441, 567), n = c(1176, 1170), p = NULL,
+          alternative = "two.sided",
+          conf.level = 0.95, correct = FALSE)
+```
+
+Risk ratio: $0.69$
+
+95% CI: $(0.61, 0.78)$
+
+```{r}
+cr_more <- dig %>%   
+  mutate(cardiothoracic_ratio = case_when(CHESTX > 0.55 ~ "Yes",
+                                 TRUE ~ "No")) %>% 
+  filter(cardiothoracic_ratio == "Yes")
+
+mod <- coxph(Surv(DWHFDAYS, DWHF) ~ treatment, data = cr_more)
+summary(mod)
+```
+
+
+## NYHA class
+```{r}
 nyha <- dig %>% 
   filter(!is.na(FUNCTCLS)) %>% 
   mutate(class = case_when(FUNCTCLS %in% c(1, 2) ~ "I or II",
@@ -469,7 +654,57 @@ dig %>%
   kable()
 ```
 
-### Overall study population
+### NYHA class I or II
+Absolute difference: $32.2-26.4=-5.8$
+
+95% CI:$(-8.4, -3.1)$
+```{r}
+prop.test(x = c(601, 739), n = c(2275, 2296), p = NULL,
+          alternative = "two.sided",
+          conf.level = 0.95, correct = FALSE)
+```
+
+Risk ratio: $0.78$
+
+95% CI: $(0.70, 0.87)$
+
+```{r}
+nyha_12 <- dig %>%   
+  filter(!is.na(FUNCTCLS)) %>% 
+  mutate(class = case_when(FUNCTCLS %in% c(1, 2) ~ "I or II",
+                           FUNCTCLS %in% c(3, 4) ~ "III or IV")) %>% 
+  filter(class != "III or IV")
+
+mod <- coxph(Surv(DWHFDAYS, DWHF) ~ treatment, data = nyha_12)
+summary(mod)
+```
+
+### NYHA class III or IV
+Absolute difference: $50.0-39.2=-10.8$
+
+95% CI:$(-14.9, -6.7)$, this is slightly different from the $(-14.9, -6.7)$ as reported
+```{r}
+prop.test(x = c(438, 552), n = c(1118, 1105), p = NULL,
+          alternative = "two.sided",
+          conf.level = 0.95, correct = FALSE)
+```
+
+Risk ratio: $0.70$
+
+95% CI: $(0.61, 0.79)$
+
+```{r}
+nyha_34 <- dig %>%   
+  filter(!is.na(FUNCTCLS)) %>% 
+  mutate(class = case_when(FUNCTCLS %in% c(1, 2) ~ "I or II",
+                           FUNCTCLS %in% c(3, 4) ~ "III or IV")) %>% 
+  filter(class == "III or IV")
+
+mod <- coxph(Surv(DWHFDAYS, DWHF) ~ treatment, data = nyha_34)
+summary(mod)
+```
+
+## Overall study population
 ```{r}
 tot <- dig %>% 
   count(treatment) %>% 
@@ -485,14 +720,16 @@ dig %>%
 ```
 
 Absolute difference: $37.9-30.6=-7.3$
+
 95% CI:$(-9.5, -5.0)$
 ```{r}
 prop.test(x = c(1041, 1291), n = c(3397, 3403), p = NULL,
           alternative = "two.sided",
-          conf.level = 0.95, correct = TRUE)
+          conf.level = 0.95, correct = FALSE)
 ```
 
 Risk ratio: $0.75$
+
 95% CI: $(0.69, 0.82)$
 
 ```{r}
