@@ -566,30 +566,32 @@ summary(mod)
 ## Cardiothoracic ratio
 ```{r}
 cr <- dig %>% 
-  mutate(cardiothoracic_ratio = case_when(CHESTX > 0.55 ~ "Yes",
+  filter(!is.na(CHESTX)) %>% 
+  mutate(cardiothoracic_ratio_over55 = case_when(CHESTX > 0.55 ~ "Yes",
                                  TRUE ~ "No")) %>% 
-  count(treatment, cardiothoracic_ratio) %>% 
+  count(treatment, cardiothoracic_ratio_over55) %>% 
   rename(total_cnt = n)
 
 dig %>% 
   filter(DWHF == 1) %>% 
-  mutate(cardiothoracic_ratio = case_when(CHESTX > 0.55 ~ "Yes",
+  filter(!is.na(CHESTX)) %>% 
+  mutate(cardiothoracic_ratio_over55 = case_when(CHESTX > 0.55 ~ "Yes",
                                  TRUE ~ "No")) %>% 
-  count(treatment, cardiothoracic_ratio) %>% 
+  count(treatment, cardiothoracic_ratio_over55) %>% 
   rename(event_cnt = n) %>% 
   left_join(cr) %>% 
-  summarise(treatment, cardiothoracic_ratio, event_cnt, total_cnt, percent = round(event_cnt/total_cnt*100, 1)) %>% 
+  summarise(treatment, cardiothoracic_ratio_over55, event_cnt, total_cnt, percent = round(event_cnt/total_cnt*100, 1)) %>% 
   kable()
 ```
 
-The count for cardiothoracic ratio <=0.55 in the digoxin group is 2221 instead of 2220, though the proportions are not different from the paper after rounding.
+The count for cardiothoracic ratio <=0.55 in the placebo group is 2232 after removing NAs instead of 2233, though the proportions are not different from the paper after rounding.
 
 ### Cardiothoracic ratio <= 0.55
 Absolute difference: $32.4-27.0=-5.4$
 
 95% CI:$(-8.1, -2.7)$
 ```{r}
-prop.test(x = c(600, 724), n = c(2221, 2233), p = NULL,
+prop.test(x = c(600, 724), n = c(2220, 2232), p = NULL,
           alternative = "two.sided",
           conf.level = 0.95, correct = FALSE)
 ```
