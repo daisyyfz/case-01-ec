@@ -1,0 +1,504 @@
+---
+title: "Case 1 Extra Credit"
+author: "Daisy Fang"
+date: "2/23/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+```
+
+```{r load-packages}
+library(tidyverse)
+library(survival)
+```
+
+```{r load-data}
+dig <- read_csv("dig.csv")
+```
+
+Any discrepancy in replication results are noted. 
+
+# Table 1
+***
+### Count by treatment
+```{r}
+# mutate name of treatment
+dig <- dig %>% 
+  mutate(treatment = case_when(TRTMT == 0 ~ "Placebo",
+                         TRUE ~ "Digoxin"))
+
+dig$treatment <- relevel(as.factor(dig$treatment), ref = "Placebo")
+
+# count by treatment
+dig %>% 
+  count(treatment) %>% 
+  kable()
+```
+
+### Age
+```{r}
+dig %>% 
+  group_by(treatment) %>% 
+  summarize(mean_age = round(mean(AGE), 1),
+            sd_age = round(sd(AGE), 1)) %>% 
+  kable()
+```
+
+### Ejection fraction
+```{r}
+dig %>% 
+  group_by(treatment) %>% 
+  summarize(mean_ejf = round(mean(EJF_PER), 1),
+            sf_ejf = round(sd(EJF_PER), 1)) %>%  # Digoxin SD is 8.8 instead of 8.9 
+  kable()
+```
+
+The standard deviation value for the digoxin group is 8.8 instead of 8.9.
+
+### Median duration of CHF
+```{r}
+dig %>% 
+  group_by(treatment) %>% 
+  summarize(median_chf = median(CHFDUR, na.rm = TRUE)) %>%  # removed 14 NA's
+  kable()
+```
+
+
+### Female Sex
+```{r}
+dig %>% 
+  group_by(treatment, SEX) %>% 
+  count() %>% 
+  group_by(treatment) %>% 
+  summarize(percent_of_patients = round(n/sum(n)*100, 1)) %>% 
+  slice(2, 4) %>% 
+  kable()
+```
+
+### Nonwhite race
+```{r}
+dig %>% 
+  group_by(treatment, RACE) %>% 
+  count() %>% 
+  group_by(treatment) %>% 
+  summarize(percent_of_patients = round(n/sum(n)*100, 1)) %>% 
+  slice(2, 4) %>% 
+  kable()
+```
+
+The value for digoxin group is 14.3% instead of 14.4%.
+
+### Age >70 yr
+```{r}
+dig %>% 
+  mutate(age_over_70 = case_when(AGE > 70 ~ "yes",
+                                 TRUE ~ "no")) %>% 
+  group_by(treatment, age_over_70) %>% 
+  count() %>% 
+  group_by(treatment) %>% 
+  summarize(percent_of_patients = round(n/sum(n)*100, 1)) %>% 
+  slice(2, 4) %>% 
+  kable()
+```
+
+### Method of assessing ejection fraction
+```{r}
+dig %>% 
+  mutate(method = case_when(EJFMETH == 1 ~ "Radionuclide ventriculography",
+                            EJFMETH == 2 ~ "Two-dimensional echocardiography",
+                            TRUE ~ "Contrast angiography")) %>% 
+  group_by(treatment, method) %>% 
+  count() %>% 
+  group_by(treatment) %>% 
+  summarize(method, percent_of_patients = round(n/sum(n)*100, 1)) %>% 
+  kable()
+```
+
+### Cardiothoracic ratio >0.55
+```{r}
+dig %>% 
+  mutate(ratio_over_0.55 = case_when(CHESTX > 0.55 ~ "yes",
+                                 TRUE ~ "no")) %>% 
+  group_by(treatment, ratio_over_0.55) %>% 
+  count() %>% 
+  group_by(treatment) %>% 
+  summarize(percent_of_patients = round(n/sum(n)*100, 1)) %>% 
+  slice(2, 4) %>% 
+  kable()
+```
+
+### NYHA class
+```{r}
+dig %>% 
+  mutate(class = case_when(FUNCTCLS == 1 ~ "I",
+                           FUNCTCLS == 2 ~ "II",
+                           FUNCTCLS == 3 ~ "III",
+                           FUNCTCLS == 4 ~ "IV")) %>% 
+  filter(!is.na(class)) %>% 
+  group_by(treatment, class) %>% 
+  count() %>% 
+  group_by(treatment) %>% 
+  summarize(class, percent_of_patients = round(n/sum(n)*100, 1)) %>% 
+  kable()
+```
+
+### No. of signs or symptoms of CHF
+```{r}
+dig %>% 
+  mutate(number = case_when(NSYM == 0 ~ "0",
+                            NSYM == 1 ~ "1",
+                           NSYM == 2 ~ "2",
+                           NSYM == 3 ~ "3",
+                           NSYM == 4 ~ ">=4")) %>% 
+  group_by(treatment, number) %>% 
+  count() %>% 
+  group_by(treatment) %>% 
+  summarize(number, percent_of_patients = round(n/sum(n)*100, 1)) %>% 
+  kable()
+```
+The value for the digoxin group over 4 events is 80.2 instead of 80.1.
+
+### Medical history
+Previous myocardial infarction:
+```{r}
+dig %>% 
+  group_by(treatment, PREVMI) %>% 
+  count() %>% 
+  group_by(treatment) %>% 
+  summarize(percent_of_patients = round(n/sum(n)*100, 1)) %>% 
+  slice(2, 4) %>% 
+  kable()
+```
+
+Current angina:
+```{r}
+dig %>% 
+  group_by(treatment, ANGINA) %>% 
+  count() %>% 
+  group_by(treatment) %>% 
+  summarize(percent_of_patients = round(n/sum(n)*100, 1)) %>% 
+  slice(2, 4) %>% 
+  kable()
+```
+
+Diabetes:
+```{r}
+dig %>% 
+  group_by(treatment, DIABETES) %>% 
+  count() %>% 
+  group_by(treatment) %>% 
+  summarize(percent_of_patients = round(n/sum(n)*100, 1)) %>% 
+  slice(2, 4) %>% 
+  kable()
+```
+
+Hypertension:
+```{r}
+dig %>% 
+  group_by(treatment, HYPERTEN) %>% 
+  count() %>% 
+  group_by(treatment) %>% 
+  summarize(percent_of_patients = round(n/sum(n)*100, 1)) %>% 
+  slice(2, 4) %>% 
+  kable()
+```
+
+### Previous digoxin use
+```{r}
+dig %>% 
+  group_by(treatment, DIGUSE) %>% 
+  count() %>% 
+  group_by(treatment) %>% 
+  summarize(percent_of_patients = round(n/sum(n)*100, 1)) %>% 
+  slice(2, 4) %>% 
+  kable()
+```
+
+
+### Primary cause of CHF
+Ischemic:
+```{r}
+dig %>% 
+  mutate(ischemic = case_when(CHFETIOL == 1 ~ "yes",
+                              TRUE ~ "no")) %>% 
+  group_by(treatment, ischemic) %>% 
+  count() %>% 
+  group_by(treatment) %>% 
+  summarize(percent_of_patients = round(n/sum(n)*100, 1)) %>% 
+  slice(2, 4) %>% 
+  kable()
+```
+The placebo value is 70.5 instead of 70.4.
+
+Nonischemic:
+```{r}
+dig %>% 
+  filter(!is.na(CHFETIOL)) %>% 
+  mutate(nonischemic = case_when(CHFETIOL == 1 ~ "no",
+                              TRUE ~ "yes")) %>% 
+  group_by(treatment, nonischemic) %>% 
+  count() %>% 
+  group_by(treatment) %>% 
+  summarize(percent_of_patients = round(n/sum(n)*100, 1)) %>% 
+  slice(2, 4) %>% 
+  kable()
+```
+
+Nonischemic - Idiopathic:
+```{r}
+dig %>% 
+  filter(!is.na(CHFETIOL)) %>% 
+  mutate(idiopathic = case_when(CHFETIOL == 4 ~ "yes",
+                              TRUE ~ "no")) %>% 
+  group_by(treatment, idiopathic) %>% 
+  count() %>% 
+  group_by(treatment) %>% 
+  summarize(percent_of_patients = round(n/sum(n)*100, 1)) %>% 
+  slice(2, 4) %>% 
+  kable()
+```
+
+The placebo group value is 14.2 instead of 14.1.
+
+Nonischemic - Hypertensive:
+```{r}
+dig %>% 
+  filter(!is.na(CHFETIOL)) %>% 
+  mutate(hypertensive = case_when(CHFETIOL == 2 ~ "yes",
+                              TRUE ~ "no")) %>% 
+  group_by(treatment, hypertensive) %>% 
+  count() %>% 
+  group_by(treatment) %>% 
+  summarize(percent_of_patients = round(n/sum(n)*100, 1)) %>% 
+  slice(2, 4) %>% 
+  kable()
+```
+
+Nonischemic - Other:
+```{r}
+dig %>% 
+  filter(!is.na(CHFETIOL)) %>% 
+  mutate(other = case_when(CHFETIOL %in% c(3, 5, 6) ~ "yes",
+                              TRUE ~ "no")) %>% 
+  group_by(treatment, other) %>% 
+  count() %>% 
+  group_by(treatment) %>% 
+  summarize(percent_of_patients = round(n/sum(n)*100, 1)) %>% 
+  slice(2, 4) %>% 
+  kable()
+```
+The digoxin group value is 5.5 instead of 5.4.
+
+### Concomitant medications
+Diuretics:
+```{r}
+dig %>% 
+  mutate(diuretics = case_when(DIURETK == 1 | DIURET == 1 ~ "yes",
+                               TRUE ~ "no")) %>% 
+  group_by(treatment, diuretics) %>% 
+  count() %>% 
+  group_by(treatment) %>% 
+  summarize(percent_of_patients = round(n/sum(n)*100, 1)) %>% 
+  slice(2, 4) %>% 
+  kable()
+```
+
+ACE inhibitors:
+```{r}
+dig %>% 
+  group_by(treatment, ACEINHIB) %>% 
+  count() %>% 
+  group_by(treatment) %>% 
+  summarize(percent_of_patients = round(n/sum(n)*100, 1)) %>% 
+  slice(2, 4) %>% 
+  kable()
+```
+
+Nitrates:
+```{r}
+dig %>% 
+  group_by(treatment, NITRATES) %>% 
+  count() %>% 
+  group_by(treatment) %>% 
+  summarize(percent_of_patients = round(n/sum(n)*100, 1)) %>% 
+  slice(2, 4) %>% 
+  kable()
+```
+
+The value for digoxin group is 42.2 instead of 42.1.
+
+Other vasodilators:
+```{r}
+dig %>% 
+  group_by(treatment, VASOD) %>% 
+  count() %>% 
+  group_by(treatment) %>% 
+  summarize(percent_of_patients = round(n/sum(n)*100, 1)) %>% 
+  slice(2, 4) %>% 
+  kable()
+```
+
+### Daily dose of study medication prescribed 
+```{r}
+dig %>% 
+  mutate(dose = DIGDOSE) %>% 
+  group_by(treatment, dose) %>% 
+  count() %>% 
+  group_by(treatment) %>% 
+  summarize(dose, percent_of_patients = round(n/sum(n)*100, 1)) %>% 
+  filter(dose %in% c(0.125, 0.250, 0.375, 0.500)) %>% 
+  kable()
+```
+
+The placebo 0.250mg value is 70.1 instead of 70.0.
+
+# Table 4
+***
+### Ejection fraction
+```{r}
+ef <- dig %>% 
+  mutate(ejection_fraction = case_when(EJF_PER < 25 ~ "<0.25",
+                                       TRUE ~ "0.25-0.45")) %>% 
+  count(treatment, ejection_fraction) %>% 
+  rename(total_cnt = n)
+
+dig %>% 
+  filter(DWHF == 1) %>% 
+  mutate(ejection_fraction = case_when(EJF_PER < 25 ~ "<0.25",
+                                       TRUE ~ "0.25-0.45")) %>% 
+  count(treatment, ejection_fraction) %>% 
+  rename(event_cnt = n) %>% 
+  left_join(ef) %>% 
+  summarise(treatment, ejection_fraction, event_cnt, total_cnt, percent = round(event_cnt/total_cnt*100, 1)) %>% 
+  kable()
+  
+```
+
+### Previous use of digoxin
+
+```{r}
+pdu <- dig %>% 
+  mutate(previous_digoxin_use = case_when(DIGUSE == 0 ~ "No",
+                                       TRUE ~ "Yes")) %>% 
+  count(treatment, previous_digoxin_use) %>% 
+  rename(total_cnt = n)
+
+dig %>% 
+  filter(DWHF == 1) %>% 
+  mutate(previous_digoxin_use = case_when(DIGUSE == 0 ~ "No",
+                                       TRUE ~ "Yes")) %>% 
+  count(treatment, previous_digoxin_use) %>% 
+  rename(event_cnt = n) %>% 
+  left_join(pdu) %>% 
+  summarise(treatment, previous_digoxin_use, event_cnt, total_cnt, percent = round(event_cnt/total_cnt*100, 1)) %>% 
+  kable()
+
+```
+
+
+### Cause of heart failure
+```{r}
+chf <- dig %>% 
+  filter(!is.na(CHFETIOL)) %>% 
+  mutate(ischemic = case_when(CHFETIOL == 1 ~ "Yes",
+                              TRUE ~ "No")) %>% 
+  count(treatment, ischemic) %>% 
+  rename(total_cnt = n)
+
+dig %>% 
+  filter(DWHF == 1) %>% 
+  filter(!is.na(CHFETIOL)) %>% 
+  mutate(ischemic = case_when(CHFETIOL == 1 ~ "Yes",
+                              TRUE ~ "No")) %>% 
+  count(treatment, ischemic) %>% 
+  rename(event_cnt = n) %>% 
+  left_join(chf) %>% 
+  summarise(treatment, ischemic, event_cnt, total_cnt, percent = round(event_cnt/total_cnt*100, 1)) %>% 
+  kable()
+```
+
+
+### Cardiothoracic ratio
+```{r}
+cr <- dig %>% 
+  mutate(cardiothoracic_ratio = case_when(CHESTX > 0.55 ~ "Yes",
+                                 TRUE ~ "No")) %>% 
+  count(treatment, cardiothoracic_ratio) %>% 
+  rename(total_cnt = n)
+
+dig %>% 
+  filter(DWHF == 1) %>% 
+  mutate(cardiothoracic_ratio = case_when(CHESTX > 0.55 ~ "Yes",
+                                 TRUE ~ "No")) %>% 
+  count(treatment, cardiothoracic_ratio) %>% 
+  rename(event_cnt = n) %>% 
+  left_join(cr) %>% 
+  summarise(treatment, cardiothoracic_ratio, event_cnt, total_cnt, percent = round(event_cnt/total_cnt*100, 1)) %>% 
+  kable()
+```
+
+The count for cardiothoracic ratio <=0.55 in the digoxin group is 2221 instead of 2220, though the proportions are not different from the paper after rounding.
+
+
+### NYHA class
+```{r}
+dig %>% 
+  filter(!is.na(FUNCTCLS)) %>% 
+  mutate(class = case_when(FUNCTCLS %in% c(1, 2) ~ "I or II",
+                           FUNCTCLS %in% c(3, 4) ~ "III or IV")) %>% 
+  count(treatment, class) 
+
+nyha <- dig %>% 
+  filter(!is.na(FUNCTCLS)) %>% 
+  mutate(class = case_when(FUNCTCLS %in% c(1, 2) ~ "I or II",
+                           FUNCTCLS %in% c(3, 4) ~ "III or IV")) %>% 
+  count(treatment, class) %>% 
+  rename(total_cnt = n)
+
+dig %>% 
+  filter(DWHF == 1) %>% 
+  filter(!is.na(FUNCTCLS)) %>% 
+  mutate(class = case_when(FUNCTCLS %in% c(1, 2) ~ "I or II",
+                           FUNCTCLS %in% c(3, 4) ~ "III or IV")) %>% 
+  count(treatment, class) %>% 
+  rename(event_cnt = n) %>% 
+  left_join(nyha) %>% 
+  summarise(treatment, class, event_cnt, total_cnt, percent = round(event_cnt/total_cnt*100, 1)) %>% 
+  kable()
+```
+
+### Overall study population
+```{r}
+tot <- dig %>% 
+  count(treatment) %>% 
+  rename(total_cnt = n)
+
+dig %>% 
+  filter(DWHF == 1) %>% 
+  count(treatment) %>% 
+  rename(event_cnt = n) %>% 
+  left_join(tot) %>% 
+  summarise(treatment, event_cnt, total_cnt, percent = round(event_cnt/total_cnt*100, 1)) %>% 
+  kable()
+```
+
+Absolute difference: $37.9-30.6=-7.3$
+95% CI:$(-9.5, -5.0)$
+```{r}
+prop.test(x = c(1041, 1291), n = c(3397, 3403), p = NULL,
+          alternative = "two.sided",
+          conf.level = 0.95, correct = TRUE)
+```
+
+Risk ratio: $0.75$
+95% CI: $(0.69, 0.82)$
+
+```{r}
+mod <- coxph(Surv(DWHFDAYS, DWHF) ~ treatment, data = dig)
+summary(mod)
+```
+
+
+
