@@ -18,7 +18,7 @@ library(survival)
 dig <- read_csv("dig.csv")
 ```
 
-Any discrepancy in replication results are noted. 
+Any discrepancy in replication results are noted. The differences could be a result of the data set not being exactly the same as the one analyzed by the original paper.
 
 # Table 1
 
@@ -55,7 +55,7 @@ dig %>%
   kable()
 ```
 
-The standard deviation value for the digoxin group is 8.8 instead of 8.9.
+The standard deviation value for the digoxin group is 8.8 instead of 8.9 as reported in the paper.
 
 ## Median duration of CHF
 ```{r}
@@ -87,7 +87,7 @@ dig %>%
   kable()
 ```
 
-The value for digoxin group is 14.3% instead of 14.4%.
+The value for the digoxin group is 14.3% instead of 14.4% as reported in the paper.
 
 ## Age >70 yr
 ```{r}
@@ -157,7 +157,7 @@ dig %>%
   summarize(number, percent_of_patients = round(n/sum(n)*100, 1)) %>% 
   kable()
 ```
-The value for the digoxin group over 4 events is 80.2 instead of 80.1.
+The value for the digoxin group with 4 or more signs or symptoms is 80.2 instead of 80.1 as reported in the paper.
 
 ## Medical history
 ### Previous myocardial infarction:
@@ -229,7 +229,7 @@ dig %>%
   slice(2, 4) %>% 
   kable()
 ```
-The placebo value is 70.5 instead of 70.4.
+The placebo group value is 70.5 instead of 70.4 as reported in the paper.
 
 ### Nonischemic:
 ```{r}
@@ -259,7 +259,7 @@ dig %>%
   kable()
 ```
 
-The placebo group value is 14.2 instead of 14.1.
+The placebo group value is 14.2 instead of 14.1 as reported in the paper.
 
 #### Nonischemic - Hypertensive:
 ```{r}
@@ -288,7 +288,7 @@ dig %>%
   slice(2, 4) %>% 
   kable()
 ```
-The digoxin group value is 5.5 instead of 5.4.
+The digoxin group value is 5.5 instead of 5.4 as reported in the paper.
 
 ## Concomitant medications
 ### Diuretics:
@@ -326,7 +326,7 @@ dig %>%
   kable()
 ```
 
-The value for digoxin group is 42.2 instead of 42.1.
+The digoxin group value is 42.2 instead of 42.1 as reported in the paper.
 
 ### Other vasodilators:
 ```{r}
@@ -351,7 +351,7 @@ dig %>%
   kable()
 ```
 
-The placebo 0.250mg value is 70.1 instead of 70.0.
+The placebo group with 0.250mg's value is 70.1 instead of 70.0  as reported in the paper.
 
 # Table 4
 
@@ -609,7 +609,7 @@ summary(mod)
 ```
 
 ### Cardiothoracic ratio > 0.55
-Absolute difference: $48.5-37.5=-11$
+Absolute difference: $48.5-37.5=-11.0$
 
 95% CI:$(-14.9, -7.0)$
 ```{r}
@@ -682,7 +682,7 @@ summary(mod)
 ### NYHA class III or IV
 Absolute difference: $50.0-39.2=-10.8$
 
-95% CI:$(-14.9, -6.7)$, this is slightly different from the $(-14.9, -6.7)$ as reported
+95% CI:$(-14.9, -6.7)$
 ```{r}
 prop.test(x = c(438, 552), n = c(1118, 1105), p = NULL,
           alternative = "two.sided",
